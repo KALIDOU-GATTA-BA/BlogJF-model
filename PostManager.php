@@ -1,18 +1,19 @@
 <?php
-require_once("Manager.php");
-
+spl_autoload_register(function ($Manager) {
+include $Manager . '.php';
+});
 class PostManager extends Manager
 {
     public function getPosts()
     {
         $db = $this->dbConnect();
-        $chapterByPage= 5;
-        $currentPage= $_GET['page'];
-        $start=($currentPage-1)*$chapterByPage;
-        $req = $db->query("SELECT id, title, creation_date, SUBSTRING(content, 1,130) AS chapter FROM posts ORDER BY creation_date DESC LIMIT $start, $chapterByPage");
+        $chapterByPage= 3;
+        $currentPage= intval ($_GET['page']);
+        $start=ceil(($currentPage-1)*$chapterByPage);
+        $req = $db->query("SELECT id, title, creation_date,  content  FROM posts ORDER BY creation_date DESC LIMIT $start, $chapterByPage");
         return $req ;
     }
-
+ 
     public function getPost($postId)
     {
         $db = $this->dbConnect();
@@ -21,6 +22,5 @@ class PostManager extends Manager
         $post = $req->fetch();
         return $post;
     }
-    
+ 
 }
-
